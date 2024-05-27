@@ -33,6 +33,10 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
 
 class MainActivity : AppCompatActivity() {
     private val REQUEST_LOCATION_CODE = 123123
@@ -40,6 +44,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        setContentView(R.layout.activity_main)
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         if (!isLocationEnabled()) {
@@ -109,8 +114,8 @@ class MainActivity : AppCompatActivity() {
                         val weather = response.body()
                         Log.d("WEATHER", weather.toString())
                         for (i in weather!!.weather.indices) {
-                            findViewById<TextView>(R.id.text_view_sunset).text = weather.sys.sunset.toString()
-                            findViewById<TextView>(R.id.text_view_sunrise).text = weather.sys.sunrise.toString()
+                            findViewById<TextView>(R.id.text_view_sunset).text = convertTime(weather.sys.sunset.toLong())
+                            findViewById<TextView>(R.id.text_view_sunrise).text = convertTime(weather.sys.sunrise.toLong())
                             findViewById<TextView>(R.id.text_view_status).text = weather.weather[i].description
                             findViewById<TextView>(R.id.text_view_address).text = weather.name
                             findViewById<TextView>(R.id.text_view_temp_max).text = weather.main.temp_max.toString()
@@ -140,6 +145,13 @@ class MainActivity : AppCompatActivity() {
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
                 || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
 
+    }
+
+    private fun convertTime(time: Long): String {
+        val date = Date(time * 1000L)
+        val timeFormatted = SimpleDateFormat("HH:mm", Locale.UK)
+        timeFormatted.timeZone = TimeZone.getDefault()
+        return timeFormatted.format(date)
     }
 
     private fun requestPermissions() {
