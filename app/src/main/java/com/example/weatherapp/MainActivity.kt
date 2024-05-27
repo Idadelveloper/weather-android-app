@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
 import android.util.Log
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResultLauncher
@@ -107,6 +108,18 @@ class MainActivity : AppCompatActivity() {
                     if (response.isSuccessful) {
                         val weather = response.body()
                         Log.d("WEATHER", weather.toString())
+                        for (i in weather!!.weather.indices) {
+                            findViewById<TextView>(R.id.text_view_sunset).text = weather.sys.sunset.toString()
+                            findViewById<TextView>(R.id.text_view_sunrise).text = weather.sys.sunrise.toString()
+                            findViewById<TextView>(R.id.text_view_status).text = weather.weather[i].description
+                            findViewById<TextView>(R.id.text_view_address).text = weather.name
+                            findViewById<TextView>(R.id.text_view_temp_max).text = weather.main.temp_max.toString()
+                            findViewById<TextView>(R.id.text_view_temp_min).text = weather.main.temp_min.toString()
+                            findViewById<TextView>(R.id.text_view_temp).text = weather.main.temp.toString()
+                            findViewById<TextView>(R.id.text_view_humidity).text = weather.main.humidity.toString()
+                            findViewById<TextView>(R.id.text_view_pressure).text = weather.main.pressure.toString()
+                            findViewById<TextView>(R.id.text_view_wind).text = weather.wind.speed.toString()
+                        }
                     } else {
                         Toast.makeText(this@MainActivity, "Something went wrong", Toast.LENGTH_SHORT).show()
                     }
